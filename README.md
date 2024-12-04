@@ -1,0 +1,3 @@
+# Advent of Code 2024
+Some occasional code challenges. Don't expect too much...
+solved with the power of the shell and javascript 😎
