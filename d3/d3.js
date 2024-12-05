@@ -9,7 +9,7 @@ while ((match = rex.exec(src)) !== null) {
 console.log("Part1:", solution)
 
 // Part2
-const rex2 = /don't\(\).*?(?=do\(\))/g
+const rex2 = /don't\(.*?(?:do\(|$)/g
 const src2 = src.replaceAll(rex2, '')
 solution = 0
 while ((match = rex.exec(src2)) !== null) {
