@@ -1,7 +1,7 @@
 $src = Get-Content .\d2.input
 $count = 0
 
-function Did-Sort {
+function Test-DidSort {
     param (
         $array
     )
@@ -24,7 +24,7 @@ function Did-Sort {
 foreach ($line in $src) {
     $lnumbers = $line.Split(" ") | foreach { [int]$_ }
     $count++
-    if (Did-Sort $lnumbers) {
+    if (Test-DidSort $lnumbers) {
         #write "skipped because array was sorted"
         $count--
         continue
