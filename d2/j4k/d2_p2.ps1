@@ -1,59 +1,52 @@
 $src = Get-Content .\d2.input
 $count = 0
 
-# function returns true if all levels are safe and false otherwise
 function Test-Level {
     param (
-        $mode,
-        $currentnumber,
-        $nextnumber
+        $levelarray
     )
-    $diff = [math]::Abs($currentnumber - $nextnumber)
-    if ($mode -eq "incr") {
-        if ($diff -notin 1..3 -or $currentnumber -ge $nextnumber) {
-            return $false
-        }
 
-    }
-    elseif ($mode -eq "decr") {
-        if ($diff -notin 1..3 -or $currentnumber -le $nextnumber) {
-            return $false
+    $mode = $levelarray[0] -lt $levelarray[$levelarray.Length - 1] ? "incr" : "decr"
+
+    for ($i = 0; $i -lt $levelarray.Count - 1; $i++) {
+        $currentnumber = $levelarray[$i]
+        $nextnumber = $levelarray[$i + 1]
+
+        $diff = [math]::Abs($currentnumber - $nextnumber)
+        if ($mode -eq "incr") {
+            if ($diff -notin 1..3 -or $currentnumber -ge $nextnumber) {
+                return $false
+            }
+
         }
+        elseif ($mode -eq "decr") {
+            if ($diff -notin 1..3 -or $currentnumber -le $nextnumber) {
+                return $false
+            }
+        }   
     }
-    return $true
+    return $true   
 }
 
 foreach ($line in $src) {
     $lnumbers = $line.Split(" ") | foreach { [int]$_ }
-    $mode = $lnumbers[0] -lt $lnumbers[$lnumbers.Length - 1] ? "incr" : "decr"
-    $count++
-    $errorcount = 0
 
-    for ($i = 0; $i -lt $lnumbers.Count - 1; $i++) {
-        $current = $lnumbers[$i]
-        $next = $lnumbers[$i + 1]
-        
-
-        if (!(Test-Level $mode $current $next)) {
-            $errorcount++
-            if ($errorcount -le 1) {
-                if (!(Test-Level $mode $lnumbers[$i - 1] $next)) {
-                    $count--
-                    break
-                }
-                else {
-                    #$i++
-                    continue
-                }
+    if (!(Test-Level $lnumbers)) {
+        for ($n = 0; $n -lt $lnumbers.Count; $n++) {
+            switch ($n) {
+                0 { $temparray = $lnumbers[1..($lnumbers.Length - 1)] }
+                ($lnumbers.Count - 1) { $temparray = $lnumbers[0..($n - 1)] }
+                Default { $temparray = $lnumbers[0..($n - 1)] + $lnumbers[($n + 1)..($lnumbers.Length - 1)] }
             }
-            else {
-                $count--
+            if (Test-Level $temparray) {
+                write "good alternative: $temparray"
+                $count++
                 break
             }
+
         }
+        $count--
     }
-
-
+    $count++
 }
-
 write $count
