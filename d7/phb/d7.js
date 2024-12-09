@@ -3,7 +3,7 @@ const input = fs.readFileSync('d7.input', 'utf-8');
 
 // AI generated helper function :)
 function generateCombinations(n) { 
-    const operators = ['+', '*']
+    const operators = ['+', '*', '|']
     const results = []
     function helper(current, depth) { 
         if (depth === n) { 
@@ -35,7 +35,15 @@ const testResult = (result, values) => {
                     calibration *= values[i + 1]
                 }
             }
+            if(combination[i] === '|') {
+                if(calibration == 0) {
+                    calibration = parseInt('' + values[i] + values[i + 1])
+                }else{
+                    calibration = parseInt('' + calibration + values[i + 1])
+                }
+            }
         }
+        // console.log(result, values, combination)
         if(calibration === result) {
             return true
         }
@@ -43,13 +51,15 @@ const testResult = (result, values) => {
     return false
 }
 
-let p1result = 0
+
+let p2result = 0
 
 input.split('\n').forEach(line => {
     const result = parseInt(line.split(":")[0])
     const values = line.split(":")[1].trim().split(" ").map(e => parseInt(e))
+    // console.log(result, values, generateCombinations(values.length - 1))
     if(testResult(result, values)) {
-        p1result += result
+        p2result += result
     }
 });
-console.log("Part 1:", p1result)
+console.log("Part 2:", p2result)
